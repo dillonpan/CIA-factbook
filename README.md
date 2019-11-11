@@ -51,3 +51,88 @@ print(pandas.read_sql_query(sqlite_sequence, conn))
 
 From the looks of it, we should be using the "facts" table as it contains the actualy information or the countries.
 
+# Queries of the Facts Table
+Alright, now that we know to use the Facts table, we can create and print some queries to show what you can do with sqlite3 & pandas:
+
+1. Write a single query that returns the:
+ - Minimum population
+ - Maximum population
+ - Minimum population growth
+ - Maximum population growth
+ 
+ ```python
+ q1 = 'SELECT MIN(population), MAX(population), MIN(population_growth), MAX(population_growth)
+       FROM facts;'
+ 
+print(pandas.read_sql_query(q1, conn))
+```
+|   |MIN(population)  |MAX(population)  |MIN(population_growth)  |MAX(population_growth)|
+|---|-----------------|-----------------|------------------------|----------------------|
+|0  |             0   |      7256490011 |                    0.0 |                   4.02|
+
+
+2. Write a query that returns the countrie(s) with the minimum population. Return all info on those countries:
+```python
+q2 = 'SELECT * 
+      FROM facts 
+      WHERE population == (SELECT MIN(population) 
+                           FROM facts);'
+                           
+print(pandas.read_sql_query(q2, conn))
+```
+| |id|code|name|area|area_land|area_water|population|population_growth|birth_rate|death_rate|migration_rate|created_at|updated_at|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|0|250|ay|Antarctica|None|280000|None|0|None|None|None|None|2015-11-01 13:38:44.885746|2015-11-01 13:38:44.885746|
+
+
+3 Write a query that returns the countrie(s) with the maximum population. Return all info on those countries:
+```python
+q3 = 'SELECT * 
+      FROM facts
+      WHERE population == (SELECT MAX(population)
+                           FROM facts);'
+
+print(pandas.read_sql_query(q3, conn))
+```
+| |id|code|name|area|area_land|area_water|population|population_growth|birth_rate|death_rate|migration_rate|created_at|updated_at|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|0|261|xx|World|None|None|None|7256490011|1.08|18.6|7.8|None|2015-11-01 13:39:09.910721|2015-11-01 13:39:09.910721|
+
+
+4. List the top 10 countries that have the highest population density:
+ - Population density is the ratio of population to land area
+```python
+q4 = 'SELECT name, CAST(population AS float)/CAST(area_land AS float) AS ratio
+      FROM facts
+      ORDER BY ratio DESC'
+
+print(pandas.read_sql_query(q4, conn))
+```
+| |        name|         ratio|
+|---|----------|--------------|
+|0|       Macau|  21168.964286|
+|1|     Monaco|  15267.500000|
+|2|   Singapore|   8259.784571|
+|3|   Hong Kong|   6655.271202|
+|4|  Gaza Strip|   5191.819444|
+|5|   Gibraltar|   4876.333333|
+|6|     Bahrain|   1771.859211|
+|7|    Maldives|   1319.640940|
+|8|       Malta|   1310.015823|
+|9|     Bermuda|   1299.925926|
+
+
+5. Which countries have the highest ratios of water to land? Only list the countries that have more water than land:
+```python
+q5 = 'SELECT name, CAST(area_water AS float)/CAST(area_land AS float) AS ratio 
+      FROM facts 
+      WHERE area_water > area_land 
+      ORDER BY ratio DESC'
+      
+print(pandas.read_sql_query(q5, conn))
+```
+| |                            name|       ratio|
+|---|------------------------------|------------|
+|0|  British Indian Ocean Territory|  905.666667|
+|1|                  Virgin Islands|    4.520231|
+
