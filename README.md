@@ -8,12 +8,14 @@ This project is a minor one that delves on reading a database and doing printing
 - population_growth - The annual population growth rate, as a percentage.
 - area - The total land and water area.
 
+# Note: Please replace [directory] below in the open() function with the link to your folder of choice where factbook.db is located
+
 # Reading the DB file and Preparing for Querying:
 The first thing we need to do is to connect to the actual database file ("factbook.db") which we can do by using the .connect() function within the sqlite3 package.
 ```python
 import sqlite3
 
-conn = sqlite3.connect("factbook.db")
+conn = sqlite3.connect("[directory].factbook.db")
 ```
 So we've connected to the db file but we don't know where to start querying. What we can do is print out the schema within the "sqllite_ master". The "sql_master" is a special table that defines the schema for the database. This exists in all db files being run via sql_lite. We can always run the below query to find all the tables within the schema:
 ```python
